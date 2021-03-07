@@ -1,23 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
+import {
+  BrowserRouter as Router,
 
+} from "react-router-dom";
+import { useState } from 'react';
+import { auth } from './service/firebase.service';
+import { Routes } from './route';
 function App() {
+  const [authenticated, setAuthenticated] = useState(false)
+  const login = async (email, password) => {
+    let user = await auth().signInWithEmailAndPassword(email, password);
+    if (user) {
+      localStorage.setItem("authenticated", true)
+      setAuthenticated(true)
+      return true;
+    }
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App container">
+      <Router>
+        <Routes login={login} authenticated={authenticated} />
+      </Router>
     </div>
   );
 }
